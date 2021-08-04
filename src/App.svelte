@@ -1,31 +1,13 @@
 <script>
-	export let name;
+	import Navbar from "./Navbar.svelte";
+	import Title from "./Title.svelte"
+	let fruits = ['apple','orange','lemon']
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-	<i class="fas fa-home fa-5x"></i>
-</main>
+<Navbar />
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+{#each fruits as item}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+<Title title={item} />
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
+{/each}
