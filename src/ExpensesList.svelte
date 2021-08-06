@@ -12,7 +12,7 @@
     {#each expenses as expense, index}
       <Expense {...expense} />
     {:else}
-      <h2>On Data</h2>
+      <h2>on expenses added to the list</h2>
     {/each}
   </ul>
 </section>
