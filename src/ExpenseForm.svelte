@@ -4,12 +4,21 @@
   let name = "";
   let amount = null;
 
-  $: console.log({ name, amount });
+  // $: console.log({ name, amount });
+
+  $: isEmpty = !name || !amount;
+
+  function handleSubmit() {
+    // e.preventDefault();
+    console.log(name, amount);
+    name = "";
+    amount = null;
+  }
 </script>
 
 <section class="form">
   <Title title="add expense" />
-  <form class="expense-form">
+  <form class="expense-form" on:submit|preventDefault={handleSubmit}>
     <div class="form-control">
       <label for="name">Name</label>
       <input type="text" name="name" id="name" bind:value={name} />
@@ -18,9 +27,17 @@
       <label for="amount">Amount</label>
       <input type="text" name="amount" id="amount" bind:value={amount} />
     </div>
-    <p class="form-empty">plase fill out all from fields</p>
-
-    <button type="submit" class="btn btn-block"> add expense </button>
+    {#if isEmpty}
+      <p class="form-empty">plase fill out all from fields</p>
+    {/if}
+    <button
+      type="submit"
+      class="btn btn-block"
+      class:disabled={isEmpty}
+      disabled={isEmpty}
+    >
+      add expense
+    </button>
     <button class="close-btn">
       <i class="fas fa-times" />
       close
