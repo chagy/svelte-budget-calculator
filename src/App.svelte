@@ -8,6 +8,11 @@
 
   let expenses = [...expensesData];
 
+  let setName = "";
+  let setAmount = null;
+  let setId = null;
+
+  $: isEditing = setId ? true : false;
   $: total = expenses.reduce((acc, curr) => {
     return (acc += curr.amount);
   }, 0);
@@ -20,13 +25,49 @@
     expenses = [];
   }
 
+  function addExpense({ name, amount }) {
+    let expense = {
+      id: Math.random() * Date.now(),
+      name,
+      amount,
+    };
+
+    expenses = [expense, ...expenses];
+  }
+
+  function setModifiedExpense(id) {
+    let expense = expenses.find((item) => item.id === id);
+    setId = expense.id;
+    setName = expense.name;
+    setAmount = expense.amount;
+  }
+
+  function editExpense({ name, amount }) {
+    expenses = expenses.map((item) => {
+      return item.id === setId
+        ? { ...item, name: name, amount: amount }
+        : { ...item };
+    });
+
+    setName = "";
+    setAmount = null;
+    setId = null;
+  }
+
   setContext("remove", removeExpense);
+  setContext("modify", setModifiedExpense);
 </script>
 
 <Navbar />
 
 <main class="content">
-  <ExpenseForm />
+  <ExpenseForm
+    {addExpense}
+    name={setName}
+    amount={setAmount}
+    {isEditing}
+    {editExpense}
+  />
   <Totals title="total expenses" {total} />
   <ExpensesList {expenses} />
   <button
