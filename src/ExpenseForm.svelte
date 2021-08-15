@@ -1,4 +1,22 @@
 <script>
+  // import { onDestroy, onMount, beforeUpdate, afterUpdate } from "svelte";
+
+  // onMount(() => {
+  //   console.log("form has onMount");
+  // });
+
+  // beforeUpdate(() => {
+  //   console.log("form has beforeUpdate");
+  // });
+
+  // afterUpdate(() => {
+  //   console.log("form has afterUpdate");
+  // });
+
+  // onDestroy(() => {
+  //   console.log("form has onDestroy");
+  // });
+
   import Title from "./Title.svelte";
 
   export let name = "";
@@ -6,6 +24,7 @@
   export let addExpense;
   export let isEditing;
   export let editExpense;
+  export let hideForm;
   // $: console.log({ name, amount });
 
   $: isEmpty = !name || !amount;
@@ -19,6 +38,8 @@
 
     name = "";
     amount = null;
+
+    hideForm();
   }
 </script>
 
@@ -44,7 +65,7 @@
     >
       {#if isEditing} edit expense {:else} add expense {/if}
     </button>
-    <button class="close-btn">
+    <button class="close-btn" on:click={hideForm}>
       <i class="fas fa-times" />
       close
     </button>

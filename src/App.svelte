@@ -1,21 +1,39 @@
 <script>
-  import { setContext } from "svelte";
+  // import Github from "./Github.svelte";
+  import GithubAwait from "./GithubAwait.svelte";
+  import { setContext, onMount, afterUpdate } from "svelte";
+
   import Navbar from "./Navbar.svelte";
   import ExpensesList from "./ExpensesList.svelte";
   import Totals from "./Totals.svelte";
   import ExpenseForm from "./ExpenseForm.svelte";
-  import expensesData from "./expenses";
+  import Modal from "./Modal.svelte";
 
-  let expenses = [...expensesData];
+  // import expensesData from "./expenses";
+
+  let expenses = [];
 
   let setName = "";
   let setAmount = null;
   let setId = null;
 
+  let isFormOpen = false;
+
   $: isEditing = setId ? true : false;
   $: total = expenses.reduce((acc, curr) => {
-    return (acc += curr.amount);
+    return (acc += parseFloat(curr.amount));
   }, 0);
+
+  function showForm() {
+    isFormOpen = true;
+  }
+
+  function hideForm() {
+    isFormOpen = false;
+    setName = "";
+    setAmount = null;
+    setId = null;
+  }
 
   function removeExpense(id) {
     expenses = expenses.filter((item) => item.id !== id);
@@ -40,6 +58,7 @@
     setId = expense.id;
     setName = expense.name;
     setAmount = expense.amount;
+    showForm();
   }
 
   function editExpense({ name, amount }) {
@@ -56,18 +75,38 @@
 
   setContext("remove", removeExpense);
   setContext("modify", setModifiedExpense);
+
+  function setLocalStorage() {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }
+
+  onMount(() => {
+    expenses = localStorage.getItem("expenses")
+      ? JSON.parse(localStorage.getItem("expenses"))
+      : [];
+  });
+
+  afterUpdate(() => {
+    setLocalStorage();
+  });
 </script>
 
-<Navbar />
+<Navbar {showForm} />
 
 <main class="content">
-  <ExpenseForm
-    {addExpense}
-    name={setName}
-    amount={setAmount}
-    {isEditing}
-    {editExpense}
-  />
+  <GithubAwait />
+  <!-- {#if isFormOpen}
+    <Modal>
+      <ExpenseForm
+        {addExpense}
+        name={setName}
+        amount={setAmount}
+        {isEditing}
+        {editExpense}
+        {hideForm}
+      />
+    </Modal>
+  {/if}
   <Totals title="total expenses" {total} />
   <ExpensesList {expenses} />
   <button
@@ -76,5 +115,5 @@
     on:click={clearExpenses}
   >
     clear expenses
-  </button>
+  </button> -->
 </main>
